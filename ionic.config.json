@@ -1,0 +1,7 @@
+{
+  "name": "cs-pdf",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
