@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, HttpDownloadFileResult, HttpResponse } from '@capacitor-community/http';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 
 
 @Injectable({
@@ -19,5 +19,23 @@ export class DownloadService {
     };
     const result: HttpDownloadFileResult = await Http.downloadFile(options);
     return result.path;
+  }
+
+  public async get(url: string): Promise<any> {
+    const options = {
+      url
+    };
+    const result: HttpResponse = await Http.get(options);
+    return result.data;
+  }
+
+  public async write(data: any): Promise<string> {
+    const result = await Filesystem.writeFile({
+      path: 'mypdf.pdf',
+      data,
+      directory: Directory.Data,
+      encoding: Encoding.UTF8,
+    });
+    return result.uri;
   }
 }

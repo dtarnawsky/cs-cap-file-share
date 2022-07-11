@@ -23,7 +23,7 @@ export class HomePage {
         {
           title: 'Share PDF',
           text: 'Share the PDF',
-          url: path
+          url: `file://${path}`
         }
       );
       this.show(JSON.stringify(result));
@@ -34,6 +34,35 @@ export class HomePage {
     } finally {
       this.downloading = false;
     }
+  }
+
+  async get() {
+    try {
+      this.downloading = true;
+      // Small file
+      const url = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+      // Large file
+      //const url = 'https://research.nhm.org/pdfs/10840/10840.pdf';
+      const data = await this.downloadService.get(url);
+      const path = await this.downloadService.write(data);
+      const result = await Share.share(
+        {
+          title: 'Share PDF',
+          text: 'Share the PDF',
+          url: path
+        }
+      );
+      this.show(JSON.stringify(result));
+    } catch (err) {
+      const msg = `${err}.`;
+      console.error(msg);
+      this.show(msg);
+    } finally {
+      this.downloading = false;
+    }
+
+
+
   }
 
   async show(message: string) {
