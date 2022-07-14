@@ -29,13 +29,14 @@ export class DownloadService {
     return result.data;
   }
 
-  public async write(data: any): Promise<string> {
+  public async write(data: any, directory: Directory): Promise<string> {
     const result = await Filesystem.writeFile({
       path: 'mypdf.pdf',
       data,
-      directory: Directory.Data,
+      directory,
       encoding: Encoding.UTF8,
     });
+    console.log('written file');
     return result.uri;
   }
 }
