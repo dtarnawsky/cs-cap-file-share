@@ -13,7 +13,9 @@ export class DownloadService {
     const options = {
       url
     };
+    console.log(`getting ${url}`);
     const response = await fetch(url, { method: 'GET'});
+    console.log(`got ${response.statusText}`);
     return response.blob();
   }
 
