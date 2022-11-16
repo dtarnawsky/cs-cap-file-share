@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Directory } from '@capacitor/filesystem';
-import { Share } from '@capacitor/share';
+import { Share, ShareResult } from '@capacitor/share';
 import { AlertController } from '@ionic/angular';
 import { DownloadService } from '../download.service';
 
@@ -42,26 +42,60 @@ export class HomePage {
   //   }
   // }
 
-  async share(url: string, toCache: boolean) {
+  async share(url: string, dir: string, multiple: boolean = false) {
+    let path: string;
+    let data: Blob;
     try {
       this.downloading = true;
-      const data = await this.downloadService.get(url);
+      data = await this.downloadService.get(url);
       console.log('Downloaded file');
+    } catch (err) {
+      const msg = `Download Error: ${err}.`;
+      console.error(msg);
+      this.show(msg);
+      this.downloading = false;
+      return;
+    }
+    try {
+      let directory: Directory = Directory.Cache;
+      switch (dir) {
+        case 'DATA': directory = Directory.Data; break;
+        case 'DOCUMENTS': directory = Directory.Documents; break;
+      }
+      //const value = await this.downloadService.asBase64(data);
+      const value = await data.text();
+      path = await this.downloadService.write(value, directory);
+    } catch (err) {
+      const msg = `Write Error: ${err}.`;
+      console.error(msg);
+      this.show(msg);
+      this.downloading = false;
+      return;
+    }
+    try {
+      let result: ShareResult;
+      if (!multiple) {
+        result = await Share.share(
+          {
+            title: 'Share PDF',
+            text: 'Share the PDF',
+            url: path
+          }
+        );
+      }
 
-      // Cache is sharable, Data causes an application crash
-      const directory = toCache? Directory.Cache : Directory.Data;
-
-      const path = await this.downloadService.write(data, directory);
-      const result = await Share.share(
-        {
-          title: 'Share PDF',
-          text: 'Share the PDF',
-          url: path
-        }
-      );
+      if (multiple) {
+        result = await Share.share(
+          {
+            title: 'Share PDFs',
+            text: 'Share the PDFs',
+            files: [path, path, path]
+          }
+        );
+      }
       this.show(JSON.stringify(result));
     } catch (err) {
-      const msg = `${err}.`;
+      const msg = `Share Error: ${err}.`;
       console.error(msg);
       this.show(msg);
     } finally {

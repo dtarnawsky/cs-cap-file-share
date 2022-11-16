@@ -14,12 +14,17 @@
   </ion-header>
   <p [hidden]="!downloading">Downloading....</p>
   <div id="container">
-    <ion-button [disabled]="downloading" (click)="share(largeFile, true)">Share Large PDF</ion-button>
+    <ion-button [disabled]="downloading" (click)="share(largeFile, 'CACHE')">Share Large PDF</ion-button>
     <br />
-    <ion-button [disabled]="downloading" (click)="share(smallFile, true)">Share Small PDF (Cache Folder)</ion-button>
+    <ion-button [disabled]="downloading" (click)="share(smallFile, 'CACHE')">Share Small PDF (Cache Folder)</ion-button>
     <br />
-    <ion-button [disabled]="downloading" (click)="share(smallFile, false)">Share Small PDF (Data Folder)</ion-button>
+    <ion-button [disabled]="downloading" (click)="share(smallFile, 'DATA')">Share Small PDF (Data Folder)</ion-button>
     <br />
+    <ion-button [disabled]="downloading" (click)="share(smallFile, 'DATA', true)">Share 3 Small PDFs (Data Folder)</ion-button>
+    <br />
+
+    <ion-button [disabled]="downloading" (click)="share(smallFile, 'DOCUMENTS')">Share Small PDF (Documents Folder)</ion-button>
+    <br />    
     <ion-button [disabled]="downloading" (click)="download(largeFile)">Download Large PDF</ion-button>
   </div>
 </ion-content>
